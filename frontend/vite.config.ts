@@ -15,7 +15,13 @@ export default defineConfig({
     allowedHosts: true,
     strictPort: true,
     proxy: {
-      "/api/copilotkit": "http://localhost:4006",
+      // /api/agent   → http://localhost:8006/
+      // /api/agent/state → http://localhost:8006/state
+      "/api/agent": {
+        target: "http://localhost:8006",
+        rewrite: (path) => path.replace(/^\/api\/agent/, ""),
+        changeOrigin: true,
+      },
     },
   },
 });

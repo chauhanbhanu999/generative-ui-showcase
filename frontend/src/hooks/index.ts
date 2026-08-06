@@ -1,1 +1,2 @@
-export { useExampleSuggestions } from "./use-example-suggestions";
+// Hooks barrel — add exports here as needed
+export {};
