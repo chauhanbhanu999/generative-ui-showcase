@@ -1,0 +1,12 @@
+
+> frontend@0.1.0 dev
+> node --import tsx/esm watch-server.ts & vite --port 3006
+
+
+  [32m[1mVITE[22m v6.4.2[39m  [2mready in [0m[1m717[22m[2m[0m ms[22m
+
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m3006[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://169.254.172.2:[1m3006[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://172.16.120.214:[1m3006[22m/[39m
+CopilotKit API server running at http://localhost:4006
+[2m10:42:50 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/App.tsx, /src/globals.css[22m
