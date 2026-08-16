@@ -1,5 +1,8 @@
-ai
 openai
 fastapi
 uvicorn
 python-dotenv
+pydantic
+langgraph
+langchain-openai
+langgraph-checkpoint-sqlite

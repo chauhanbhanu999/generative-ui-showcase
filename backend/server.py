@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-import csv
-import os
+import json
 import sys
 import warnings
+from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Any, AsyncGenerator
 
@@ -16,93 +16,27 @@ import fastapi
 import fastapi.middleware.cors
 import fastapi.responses
 import pydantic
+from langchain_core.messages import HumanMessage
+from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
+from langgraph.types import Command
 
-# The new Vercel AI SDK for Python
-import ai
-import ai.ui.ai_sdk
+from .agent_graph import build_graph
 
-_LESSON_ROOT = Path(__file__).resolve().parents[1]
-CSV_PATH = _LESSON_ROOT / "db.csv"
-
-# --- Tools Definition ---
-
-@ai.tool
-async def query_data(query: str) -> list[dict[str, Any]]:
-    """Query the raw dataset. Returns all CSV rows. Use get_category_summary instead if you need aggregated data for a chart."""
-    with CSV_PATH.open(newline="", encoding="utf-8") as f:
-        reader = csv.DictReader(f)
-        return list(reader)
-
-@ai.tool
-async def get_category_summary() -> list[dict[str, Any]]:
-    """Get aggregated totals by subcategory from the dataset. Use this before showing a pie chart — it returns data already grouped as {label, value} pairs."""
-    from collections import defaultdict
-    totals: dict[str, float] = defaultdict(float)
-    with CSV_PATH.open(newline="", encoding="utf-8") as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-            totals[row["subcategory"]] += float(row["amount"])
-    return [{"label": k, "value": v} for k, v in totals.items()]
+_REPO_ROOT = Path(__file__).resolve().parents[1]
+CHECKPOINT_DB = _REPO_ROOT / "backend" / "checkpoints.db"
 
 
-# For Generative UI tools, we simply define them so the LLM knows they exist.
-# We don't actually need to execute any logic on the backend; the UI renders them!
+@asynccontextmanager
+async def lifespan(app: fastapi.FastAPI):
+    async with AsyncSqliteSaver.from_conn_string(str(CHECKPOINT_DB)) as checkpointer:
+        app.state.graph = build_graph(checkpointer)
+        yield
 
-class PieChartData(pydantic.BaseModel):
-    label: str
-    value: float
-
-@ai.tool
-async def pieChart(title: str, description: str, data: list[PieChartData]) -> dict:
-    """Displays data as a pie chart on the frontend. Use this for category distributions."""
-    return {"title": title, "description": description, "data": [d.dict() for d in data]}
-
-@ai.tool
-async def flightCard(title: str, airline: str, origin: str, destination: str, departure_time: str, price: str) -> dict:
-    """Displays a single flight summary card on the frontend."""
-    return {
-        "title": title, "airline": airline, "origin": origin,
-        "destination": destination, "departure_time": departure_time, "price": price
-    }
-
-@ai.tool
-async def showMyName(name: str) -> dict:
-    """Displays a friendly greeting card for the given name on the frontend."""
-    return {"name": name}
-
-
-
-TOOLS: list[ai.AgentTool] = [query_data, pieChart, flightCard, showMyName]
-
-# Use OpenAI native provider reading from .env
-provider = ai.get_provider(
-    "openai",
-    api_key=os.environ.get("OPENAI_API_KEY"),
-)
-MODEL = ai.Model(id="gpt-4o-mini", provider=provider)
-
-# provider = ai.get_provider(
-#     "google",
-#     api_key=os.environ.get("GEMINI_API_KEY"),
-# )
-# MODEL = ai.Model(id="gemini-3.6-flash", provider=provider)
-
-chat_agent = ai.Agent(tools=TOOLS)
-SYSTEM_PROMPT = (
-    "You are a helpful AI assistant. "
-    "When a user asks for charts based on the dataset, always call query_data first to fetch all CSV rows. "
-    "Prefer using a matching frontend tool when it would present the answer clearly. "
-    "Use pieChart for category distributions, "
-    "flightCard for a single flight summary, "
-    "and showMyName to greet a user by name. "
-    "Tool arguments must match the provided schema exactly."
-)
-
-# --- FastAPI Application ---
 
 app = fastapi.FastAPI(
-    title="ai-data-explorer",
-    description="Generative UI agent with data querying and chart rendering.",
+    title="genui-chat",
+    description="Deterministic generative-UI agent built on LangGraph.",
+    lifespan=lifespan,
 )
 
 app.add_middleware(
@@ -115,41 +49,71 @@ app.add_middleware(
 
 
 class ChatRequest(pydantic.BaseModel):
-    messages: list[ai.ui.ai_sdk.UIMessage]
+    thread_id: str
+    message: str | None = None
+    resume: dict[str, Any] | None = None
+
+
+def sse_event(event: str, data: Any) -> str:
+    return f"event: {event}\ndata: {json.dumps(data)}\n\n"
 
 
 @app.post("/")
 async def chat(request: ChatRequest) -> fastapi.responses.StreamingResponse:
-    """Handle chat requests and stream responses in Vercel AI Data Stream Protocol."""
-    print(f"[chat] Received {len(request.messages)} messages", file=sys.stderr, flush=True)
-    messages, approvals = ai.ui.ai_sdk.to_messages(request.messages)
+    config = {"configurable": {"thread_id": request.thread_id}}
+    if request.resume is not None:
+        input_data: Any = Command(resume=request.resume)
+    else:
+        input_data = {"messages": [HumanMessage(content=request.message or "")]}
 
-    # Prepend the system prompt to the messages list
-    messages.insert(0, ai.system_message(SYSTEM_PROMPT))
-    print(f"[chat] Converted to {len(messages)} ai messages, streaming...", file=sys.stderr, flush=True)
+    graph = app.state.graph
 
-    async def stream_response() -> AsyncGenerator[str, None]:
+    async def event_stream() -> AsyncGenerator[str, None]:
+        interrupted = False
         try:
-            async with chat_agent.run(MODEL, messages) as result:
-                ai.ui.ai_sdk.apply_approvals(approvals)
+            async for stream_mode, chunk in graph.astream(
+                input_data, config=config, stream_mode=["updates", "custom", "messages"]
+            ):
+                if stream_mode == "custom" and chunk.get("type") == "ui":
+                    yield sse_event("ui", {"component": chunk["component"], "props": chunk["props"]})
+                elif stream_mode == "messages":
+                    message_chunk, metadata = chunk
+                    # Only the general-chat node produces user-facing prose; classify_intent,
+                    # extract_flight/extract_greeting, and suggest_next_questions all stream
+                    # structured-output JSON through the same "messages" channel and must not
+                    # leak into the chat bubble.
+                    if metadata.get("langgraph_node") != "extract_general":
+                        continue
+                    content = getattr(message_chunk, "content", "")
+                    if content:
+                        yield sse_event("message", {"content": content})
+                elif stream_mode == "updates" and isinstance(chunk, dict) and "__interrupt__" in chunk:
+                    interrupted = True
+                    payload = chunk["__interrupt__"][0].value
+                    yield sse_event("interrupt", payload)
 
-                async def process() -> AsyncGenerator[ai.events.AgentEvent, None]:
-                    async for event in result:
-                        print(f"[stream] event: {type(event).__name__}", file=sys.stderr, flush=True)
-                        if isinstance(event, ai.events.HookEvent) and event.hook.status == "pending":
-                            ai.defer_hook(event.hook)
-                        yield event
-
-                async for chunk in ai.ui.ai_sdk.to_sse(process()):
-                    yield chunk
+            if not interrupted:
+                state = await graph.aget_state(config)
+                suggested = state.values.get("suggested_questions", []) if state else []
+                yield sse_event("done", {"suggested_questions": suggested})
         except Exception as e:
+            print(f"[chat] error: {e}", file=sys.stderr, flush=True)
             import traceback
             traceback.print_exc(file=sys.stderr)
-            # Yield the error as a data stream error so the frontend sees it
-            yield f'3:"{str(e)}"\n'
+            yield sse_event("error", {"message": str(e)})
 
     return fastapi.responses.StreamingResponse(
-        stream_response(),
-        headers=ai.ui.ai_sdk.UI_MESSAGE_STREAM_HEADERS,
+        event_stream(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no",
+        },
     )
 
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run(app, host="0.0.0.0", port=8003)

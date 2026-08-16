@@ -71,3 +71,7 @@ yarn-error.log*
 .vscode/
 *.swp
 *.swo
+
+# --- Scratch / non-project dirs ---
+/Chat app seeding flow/
+/yVI5-ttsy-prep-poc/
