@@ -23,16 +23,23 @@ function welcomeTurn(caseInfo: CaseInfo): ChatTurn {
   };
 }
 
-const ROOT_COMMANDS: { cmd: "ask" | "generate"; label: string; description: string }[] = [
+const ROOT_COMMANDS: { cmd: "ask" | "show" | "action" | "generate"; label: string; description: string }[] = [
   { cmd: "ask", label: "/ask", description: "Ask one of the predefined case questions" },
+  { cmd: "show", label: "/show", description: "Show a case view" },
+  { cmd: "action", label: "/action", description: "Add or remove an article from the LLM context" },
   { cmd: "generate", label: "/generate", description: "Generate a case report" },
 ];
 
-const ASK_QUESTIONS = [
+const SHOW_COMMANDS = [
+  "Show adverse media search results",
+  "Show case overview",
   "Show Top Incoming Type",
   "Show Top Outgoing Type",
   "Show Top Incoming Counterparties",
   "Show Top Outgoing Counterparties",
+];
+
+const ASK_QUESTIONS = [
   "What is the primary source of funding for the customer's account?",
   "How are the incoming funds primarily depleted?",
   "Is there evidence of regular personal banking?",
@@ -42,6 +49,8 @@ const ASK_QUESTIONS = [
   "Is there evidence of business-related activity?",
   "Create summary",
 ];
+
+const ACTION_COMMANDS = ["Add to LLM context", "Remove from LLM context"];
 
 const GENERATE_OPTIONS: CommandMenuOption[] = [
   { value: "full", label: "Full case report" },
@@ -53,6 +62,8 @@ type SlashState =
   | { mode: "none"; query: "" }
   | { mode: "root"; query: string }
   | { mode: "ask"; query: string }
+  | { mode: "show"; query: string }
+  | { mode: "action"; query: string }
   | { mode: "generate"; query: string };
 
 function getSlashState(value: string): SlashState {
@@ -76,6 +87,18 @@ function getMenuOptions(slash: SlashState): CommandMenuOption[] {
   }
   if (slash.mode === "ask") {
     return ASK_QUESTIONS.filter((q) => q.toLowerCase().includes(slash.query)).map((q) => ({
+      value: q,
+      label: q,
+    }));
+  }
+  if (slash.mode === "show") {
+    return SHOW_COMMANDS.filter((q) => q.toLowerCase().includes(slash.query)).map((q) => ({
+      value: q,
+      label: q,
+    }));
+  }
+  if (slash.mode === "action") {
+    return ACTION_COMMANDS.filter((q) => q.toLowerCase().includes(slash.query)).map((q) => ({
       value: q,
       label: q,
     }));
@@ -155,13 +178,13 @@ export function ChatScreen({ caseInfo }: ChatScreenProps) {
     }
   }
 
-  function handleSlashSelect(mode: "root" | "ask" | "generate", value: string) {
+  function handleSlashSelect(mode: "root" | "ask" | "show" | "action" | "generate", value: string) {
     if (mode === "root") {
       setInputValue(`/${value} `);
       return;
     }
     setInputValue("");
-    if (mode === "ask") {
+    if (mode === "ask" || mode === "show" || mode === "action") {
       send({ message: value });
       return;
     }
@@ -194,7 +217,7 @@ export function ChatScreen({ caseInfo }: ChatScreenProps) {
       const opt = menuOptions[highlightedIndex];
       if (opt) {
         e.preventDefault();
-        handleSlashSelect(slashState.mode as "root" | "ask" | "generate", opt.value);
+        handleSlashSelect(slashState.mode as "root" | "ask" | "show" | "action" | "generate", opt.value);
       }
     } else if (e.key === "Escape") {
       e.preventDefault();
@@ -347,11 +370,21 @@ export function ChatScreen({ caseInfo }: ChatScreenProps) {
         <form onSubmit={handleSubmit} className="max-w-4xl mx-auto relative flex items-center">
           {slashState.mode !== "none" && (
             <CommandMenu
-              title={slashState.mode === "root" ? "Commands" : slashState.mode === "ask" ? "Ask" : "Generate"}
+              title={
+                slashState.mode === "root"
+                  ? "Commands"
+                  : slashState.mode === "ask"
+                    ? "Ask"
+                    : slashState.mode === "show"
+                      ? "Show"
+                      : slashState.mode === "action"
+                        ? "Action"
+                        : "Generate"
+              }
               options={menuOptions}
               highlightedIndex={highlightedIndex}
               onHighlight={setHighlightedIndex}
-              onSelect={(value) => handleSlashSelect(slashState.mode as "root" | "ask" | "generate", value)}
+              onSelect={(value) => handleSlashSelect(slashState.mode as "root" | "ask" | "show" | "action" | "generate", value)}
               onClose={() => setInputValue("")}
             />
           )}
