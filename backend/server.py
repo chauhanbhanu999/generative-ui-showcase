@@ -21,6 +21,7 @@ from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
 from langgraph.types import Command
 
 from .agent_graph import build_graph
+from .canned_responses import match_canned_response
 
 _REPO_ROOT = Path(__file__).resolve().parents[1]
 CHECKPOINT_DB = _REPO_ROOT / "backend" / "checkpoints.db"
@@ -58,8 +59,35 @@ def sse_event(event: str, data: Any) -> str:
     return f"event: {event}\ndata: {json.dumps(data)}\n\n"
 
 
+def _sse_response(event_stream: AsyncGenerator[str, None]) -> fastapi.responses.StreamingResponse:
+    return fastapi.responses.StreamingResponse(
+        event_stream,
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no",
+        },
+    )
+
+
 @app.post("/")
 async def chat(request: ChatRequest) -> fastapi.responses.StreamingResponse:
+    # First pass: if this exact question already has a precomputed answer in
+    # data/*.json (an /ask show-command or a canned Q&A pair), serve it directly
+    # and skip the graph - no classify_intent LLM call needed for this turn.
+    if request.resume is None and request.message:
+        canned = match_canned_response(request.message)
+        if canned is not None:
+            async def canned_stream() -> AsyncGenerator[str, None]:
+                if canned["kind"] == "ui":
+                    yield sse_event("ui", {"component": canned["component"], "props": canned["props"]})
+                else:
+                    yield sse_event("message", {"content": canned["content"]})
+                yield sse_event("done", {"suggested_questions": []})
+
+            return _sse_response(canned_stream())
+
     config = {"configurable": {"thread_id": request.thread_id}}
     if request.resume is not None:
         input_data: Any = Command(resume=request.resume)
@@ -104,15 +132,7 @@ async def chat(request: ChatRequest) -> fastapi.responses.StreamingResponse:
             traceback.print_exc(file=sys.stderr)
             yield sse_event("error", {"message": str(e)})
 
-    return fastapi.responses.StreamingResponse(
-        event_stream(),
-        media_type="text/event-stream",
-        headers={
-            "Cache-Control": "no-cache",
-            "Connection": "keep-alive",
-            "X-Accel-Buffering": "no",
-        },
-    )
+    return _sse_response(event_stream())
 
 
 if __name__ == "__main__":

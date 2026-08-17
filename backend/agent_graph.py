@@ -12,6 +12,8 @@ from langgraph.graph import END, START, StateGraph
 from langgraph.graph.message import add_messages
 from langgraph.types import interrupt
 
+from .data_store import load_json
+
 Intent = Literal["case_dossier", "am_search", "funding_table", "download", "llm_context", "general"]
 
 
@@ -71,212 +73,51 @@ def push_text_message(content: str) -> None:
 
 
 # --- Mock case data (deterministic demo fixtures, mirroring the reference AML UI mockups) ---
+# Loaded from data/*.json rather than inlined so fixtures can be edited without touching code.
 
-CASE_DOSSIER_DATA = {
-    "caseId": "aml-user__testbh1151__1785945076350",
-    "caseName": "testbh1151",
-    "riskLevel": "High Risk",
-    "kycInformation": {
-        "confidence": "Confidence 0.92 · 4 sources",
-        "fields": [
-            {"label": "Customer Name", "value": "WANDA MEEKIS"},
-            {"label": "Customer Type", "value": "Personal"},
-            {"label": "Email Address", "value": "WANDAMEEKIS@ICLOUD.COM"},
-            {"label": "Acq Date", "value": "August 2009"},
-        ],
-        "notes": [
-            {
-                "title": "Profile and Ownership",
-                "status": "Watch",
-                "text": (
-                    "Wanda Meekis (DOB: February 10, 1980, Canada Certificate Of Indian Status: "
-                    "2340060201) is 46 years old and employed at Wendigo Catering as a Caterer. "
-                    "Wanda Meekis resides at 41 Seventh Ave Apt A, Sioux Lookout, On, P8T1H6, with "
-                    "listed phone number as 1-807-738-3640 and email wandameekis@icloud.com. Wanda "
-                    "Meekis has been a BMO client."
-                ),
-            },
-            {
-                "title": "Geography",
-                "status": "Stable",
-                "text": "Residence listed as Sioux Lookout, Ontario, Canada.",
-            },
-        ],
-    },
-    "amlHistory": {
-        "confidence": "Confidence 0.88 · 6 sources",
-        "cases": [
-            {
-                "caseId": "C2503224278",
-                "type": "AML - Suspicious Activity",
-                "status": "Reported/Closed",
-                "recommendation": "Customer was previously recommended for demarketed under case C2503224278.",
-            },
-            {
-                "caseId": "C2506235471",
-                "type": "AML - Suspicious Activity",
-                "status": "Reported/Closed",
-                "recommendation": "Maintaining could pose future reputational and regulatory risk.",
-            },
-            {
-                "caseId": "C2510257140",
-                "type": "AML - Suspicious Activity",
-                "status": "Reported/Closed",
-                "recommendation": "Confirmed first-party deposit fraud resulting in demarketing by BMO in September 2025.",
-            },
-        ],
-        "notes": [
-            {
-                "title": "Prior Alerts",
-                "status": "Critical",
-                "text": "Number of Cases: 3. Number of STRs: 3.",
-            },
-            {
-                "title": "Previous Investigation Outcome",
-                "status": "Watch",
-                "text": (
-                    "The client had 3 previous cases: C2503224278 where the client was reported in "
-                    "July 2025 due to suspected drug trafficking based on 2010 adverse media, "
-                    "transacting with individuals charged with fentanyl trafficking, and unusual cash "
-                    "and EMT activity inconsistent with profile; C2506235471 where the client was "
-                    "reported in August 2025 due to continued suspected drug trafficking with similar "
-                    "pass-through patterns, connections to previously reported counterparties, and use "
-                    "of disguised contact names; and C2510257140 where the client was reported in "
-                    "November 2025 due to suspected drug trafficking, transacting with counterparties "
-                    "linked to drug trafficking charges, and confirmed first-party deposit fraud "
-                    "resulting in demarketing by BMO in September 2025."
-                ),
-            },
-        ],
-    },
-    "caseBackground": {
-        "confidence": "Confidence 0.90 · 3 sources",
-        "summary": (
-            "Wanda Meekis is a high-risk personal customer who was alerted for review due to "
-            "concerning electronic money transfer activity. The alert was triggered by an AML "
-            "machine learning model (CA_EMT_ML02_M_HR_P) that identified unusual patterns in EMT "
-            "activity involving 29 counterparties across two accounts. The client was previously "
-            "reviewed under case C2510257140 and flagged for potential drug trafficking. Historical "
-            "cases C2503224278 and C2506235471 documented adverse media findings indicating the "
-            "customer had ties to various counterparties with drug trafficking charges and may have "
-            "faced such charges themselves. The client had previously been recommended for "
-            "demarketing under case C2503224278, however, activity during the current review period "
-            "suggested the past concerning behaviour may be continuing, warranting further "
-            "investigation."
-        ),
-        "notes": [
-            {
-                "title": "Business Context",
-                "status": "Watch",
-                "text": (
-                    "The fund depletion pattern is concerning. The dominance of EMT activity (46.5%) "
-                    "concentrated to two individuals (46.4% of outbound funds), combined with "
-                    "significant return items (11.5%) and third-party cash withdrawals (7.9%), "
-                    "deviates substantially from normal personal banking patterns. The high proportion "
-                    "of internal transfers preceding EMT depletion suggests potential pass-through "
-                    "activity."
-                ),
-            },
-            {
-                "title": "Investigator Notes",
-                "status": "Reviewed",
-                "text": "Transaction velocity and counterparty concentration align with patterns documented in previous investigations.",
-            },
-        ],
-    },
-}
+CASE_DOSSIER_DATA = load_json("case-dossier.json")
+AM_SEARCH_DATA = load_json("am-search.json")
+REPORT_DOWNLOAD_INFO: dict[str, dict[str, str]] = load_json("report-downloads.json")
 
-AM_SEARCH_DATA = {
-    "caseName": "testbh1151",
-    "caseSummary": (
-        "This case involves multiple counterparties and related parties with varying levels of "
-        "adverse media findings. Key concern themes include violent crime, sexual offenses, fraud, "
-        "and drug trafficking across jurisdictions."
-    ),
-    "parties": [
-        {
-            "partyName": "GURWINDER SINGH",
-            "role": "Counter Party",
-            "articlesFound": 13,
-            "searchQueryUsed": '"GURWINDER SINGH" adverse media criminal conviction',
-            "adverseMediaSummary": (
-                "Conviction records and arrest reports in UK, Canada, and India with sexual offense "
-                "and narcotics-related allegations."
-            ),
-            "articles": [
-                {
-                    "indexInResults": 1,
-                    "title": "Southwark Crown Court convicts Gurwinder Singh",
-                    "source": "Court Bulletin",
-                    "theme": "Sexual Offenses",
-                    "url": "https://example.com/article-1",
-                    "summary": "Subject convicted on multiple counts after hotel-lure investigation with potential additional victims.",
-                },
-                {
-                    "indexInResults": 2,
-                    "title": "Surrey police arrest related to Criminal Code offenses",
-                    "source": "City News",
-                    "theme": "Violence",
-                    "url": "https://example.com/article-2",
-                    "summary": "Arrest report following vehicle stop and public safety concerns.",
-                },
-            ],
-        },
-        {
-            "partyName": "MANJOT SINGH",
-            "role": "Counter Party",
-            "articlesFound": 11,
-            "searchQueryUsed": '"MANJOT SINGH" robbery arrest ICE detention',
-            "adverseMediaSummary": "Multiple arrests in the US and links to organized crime allegations in India and Canada.",
-            "articles": [
-                {
-                    "indexInResults": 1,
-                    "title": "ICE detains Manjot Singh with prior arrests",
-                    "source": "US Federal Update",
-                    "theme": "Criminal History",
-                    "url": "https://example.com/article-3",
-                    "summary": "Detention report cites repeated arrests and deportation proceedings.",
-                },
-            ],
-        },
-        {
-            "partyName": "2759746 ALBERTA INC.",
-            "role": "Primary Owner",
-            "articlesFound": 0,
-            "searchQueryUsed": "",
-            "adverseMediaSummary": "",
-            "articles": [],
-        },
-    ],
-}
+# Raw per-indicator stats (funding-analysis-ui-reference.html's `data` object) and the
+# label each indicator key renders under in the "Metric Type" column.
+TABULAR_DATA: dict[str, dict[str, dict[str, float]]] = load_json("tabular-data.json")
+FUNDING_METRIC_LABELS: dict[str, str] = load_json("funding-metric-labels.json")
+
+# Substrings matched against the user's message (lowercased) to route a specific
+# "/ask" show-command ("Show Top Incoming Type", ...) to a single indicator instead
+# of the full combined table. Checked in order; first match wins. Shared with
+# canned_responses.py so the same commands can be recognized without an LLM call.
+SHOW_COMMAND_METRIC_KEYS: list[tuple[str, str]] = [
+    ("incoming type", "top_incoming_types"),
+    ("outgoing type", "top_outgoing_types"),
+    ("incoming counterpart", "top_funding_sources"),
+    ("outgoing counterpart", "top_counterparties"),
+]
 
 
-def _build_funding_table_data() -> dict:
-    groups: dict[str, dict[str, dict[str, float]]] = {
-        "Top Incoming Type": {
-            "PAYROLL": {"count": 22, "ratio": 0.144, "min": 450.0, "max": 6200.0, "total": 59810.2},
-            "TRANSFER": {"count": 19, "ratio": 0.126, "min": 80.0, "max": 9400.88, "total": 48320.17},
-            "DEPOSIT": {"count": 11, "ratio": 0.072, "min": 40.0, "max": 3600.0, "total": 15790.45},
-        },
-        "Top Outgoing Type": {
-            "CHEQUE": {"count": 16, "ratio": 0.102, "min": 75.0, "max": 8700.0, "total": 41240.63},
-            "INTERAC": {"count": 29, "ratio": 0.189, "min": 20.0, "max": 2500.0, "total": 22311.45},
-            "WIRE": {"count": 7, "ratio": 0.044, "min": 450.0, "max": 12000.0, "total": 39820.0},
-        },
-        "Top Incoming Counterparty": {
-            "EMT": {"count": 31, "ratio": 0.203, "min": 50.0, "max": 15000.0, "total": 109201.75},
-            "WIRE": {"count": 12, "ratio": 0.079, "min": 350.0, "max": 22000.45, "total": 73450.9},
-            "CASH": {"count": 8, "ratio": 0.051, "min": 100.0, "max": 5000.0, "total": 18800.0},
-        },
-        "Top Outgoing Counterparty": {
-            "2506152 ONTARIO INC.": {"count": 18, "ratio": 0.112, "min": 45.12, "max": 9200.0, "total": 35512.28},
-            "9528-1036 QUEBEC INC.": {"count": 14, "ratio": 0.091, "min": 75.0, "max": 7400.55, "total": 24990.67},
-            "WAVE - RCCIC": {"count": 9, "ratio": 0.058, "min": 120.5, "max": 6800.0, "total": 15842.11},
-        },
-    }
+def _last_human_text(state: GraphState) -> str:
+    for message in reversed(state["messages"]):
+        if isinstance(message, HumanMessage):
+            return str(message.content)
+    return ""
+
+
+def match_show_command_metric_key(text: str) -> str | None:
+    lowered = text.lower()
+    for needle, metric_key in SHOW_COMMAND_METRIC_KEYS:
+        if needle in lowered:
+            return metric_key
+    return None
+
+
+def build_funding_table_data(metric_keys: list[str] | None = None) -> dict:
+    keys = metric_keys if metric_keys is not None else list(FUNDING_METRIC_LABELS.keys())
 
     rows = []
-    for metric_type, entries in groups.items():
+    for key in keys:
+        metric_type = FUNDING_METRIC_LABELS[key]
+        entries = TABULAR_DATA.get(key, {})
         for name, stats in sorted(entries.items(), key=lambda kv: kv[1]["total"], reverse=True):
             rows.append(
                 {
@@ -290,8 +131,10 @@ def _build_funding_table_data() -> dict:
                 }
             )
 
+    title = FUNDING_METRIC_LABELS[keys[0]] if len(keys) == 1 else "Funding Analysis"
+
     return {
-        "title": "Funding Analysis",
+        "title": title,
         "columns": [
             {"key": "metricType", "label": "Metric Type"},
             {"key": "name", "label": "Name"},
@@ -303,24 +146,6 @@ def _build_funding_table_data() -> dict:
         ],
         "rows": rows,
     }
-
-
-FUNDING_TABLE_DATA = _build_funding_table_data()
-
-REPORT_DOWNLOAD_INFO: dict[str, dict[str, str]] = {
-    "full": {
-        "label": "Full report",
-        "url": "https://example.com/reports/testbh1151-full-am-search-report.pdf",
-    },
-    "selective": {
-        "label": "Selective report",
-        "url": "https://example.com/reports/testbh1151-selective-am-search-report.pdf",
-    },
-    "narrative": {
-        "label": "case narrative",
-        "url": "https://example.com/reports/testbh1151-case-narrative.pdf",
-    },
-}
 
 
 # --- LLM setup ---
@@ -403,7 +228,8 @@ def extract_am_search(state: GraphState) -> dict:
 
 
 def extract_funding_table(state: GraphState) -> dict:
-    return {}
+    metric_key = match_show_command_metric_key(_last_human_text(state))
+    return {"extracted_fields": non_empty_fields({"metric_key": metric_key})}
 
 
 async def extract_download(state: GraphState) -> dict:
@@ -467,7 +293,9 @@ def render_component(state: GraphState) -> dict:
     elif intent == "am_search":
         props = AM_SEARCH_DATA
     elif intent == "funding_table":
-        props = FUNDING_TABLE_DATA
+        fields = state.get("extracted_fields", {})
+        metric_key = fields.get("metric_key")
+        props = build_funding_table_data([metric_key] if metric_key else None)
     elif intent == "download":
         fields = state.get("extracted_fields", {})
         report_type = fields.get("report_type", "full")

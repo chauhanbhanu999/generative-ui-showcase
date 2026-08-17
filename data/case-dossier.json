@@ -1,0 +1,77 @@
+{
+  "caseId": "aml-user__testbh1151__1785945076350",
+  "caseName": "testbh1151",
+  "riskLevel": "High Risk",
+  "kycInformation": {
+    "confidence": "Confidence 0.92 · 4 sources",
+    "fields": [
+      { "label": "Customer Name", "value": "WANDA MEEKIS" },
+      { "label": "Customer Type", "value": "Personal" },
+      { "label": "Email Address", "value": "WANDAMEEKIS@ICLOUD.COM" },
+      { "label": "Acq Date", "value": "August 2009" }
+    ],
+    "notes": [
+      {
+        "title": "Profile and Ownership",
+        "status": "Watch",
+        "text": "Wanda Meekis (DOB: February 10, 1980, Canada Certificate Of Indian Status: 2340060201) is 46 years old and employed at Wendigo Catering as a Caterer. Wanda Meekis resides at 41 Seventh Ave Apt A, Sioux Lookout, On, P8T1H6, with listed phone number as 1-807-738-3640 and email wandameekis@icloud.com. Wanda Meekis has been a BMO client."
+      },
+      {
+        "title": "Geography",
+        "status": "Stable",
+        "text": "Residence listed as Sioux Lookout, Ontario, Canada."
+      }
+    ]
+  },
+  "amlHistory": {
+    "confidence": "Confidence 0.88 · 6 sources",
+    "cases": [
+      {
+        "caseId": "C2503224278",
+        "type": "AML - Suspicious Activity",
+        "status": "Reported/Closed",
+        "recommendation": "Customer was previously recommended for demarketed under case C2503224278."
+      },
+      {
+        "caseId": "C2506235471",
+        "type": "AML - Suspicious Activity",
+        "status": "Reported/Closed",
+        "recommendation": "Maintaining could pose future reputational and regulatory risk."
+      },
+      {
+        "caseId": "C2510257140",
+        "type": "AML - Suspicious Activity",
+        "status": "Reported/Closed",
+        "recommendation": "Confirmed first-party deposit fraud resulting in demarketing by BMO in September 2025."
+      }
+    ],
+    "notes": [
+      {
+        "title": "Prior Alerts",
+        "status": "Critical",
+        "text": "Number of Cases: 3. Number of STRs: 3."
+      },
+      {
+        "title": "Previous Investigation Outcome",
+        "status": "Watch",
+        "text": "The client had 3 previous cases: C2503224278 where the client was reported in July 2025 due to suspected drug trafficking based on 2010 adverse media, transacting with individuals charged with fentanyl trafficking, and unusual cash and EMT activity inconsistent with profile; C2506235471 where the client was reported in August 2025 due to continued suspected drug trafficking with similar pass-through patterns, connections to previously reported counterparties, and use of disguised contact names; and C2510257140 where the client was reported in November 2025 due to suspected drug trafficking, transacting with counterparties linked to drug trafficking charges, and confirmed first-party deposit fraud resulting in demarketing by BMO in September 2025."
+      }
+    ]
+  },
+  "caseBackground": {
+    "confidence": "Confidence 0.90 · 3 sources",
+    "summary": "Wanda Meekis is a high-risk personal customer who was alerted for review due to concerning electronic money transfer activity. The alert was triggered by an AML machine learning model (CA_EMT_ML02_M_HR_P) that identified unusual patterns in EMT activity involving 29 counterparties across two accounts. The client was previously reviewed under case C2510257140 and flagged for potential drug trafficking. Historical cases C2503224278 and C2506235471 documented adverse media findings indicating the customer had ties to various counterparties with drug trafficking charges and may have faced such charges themselves. The client had previously been recommended for demarketing under case C2503224278, however, activity during the current review period suggested the past concerning behaviour may be continuing, warranting further investigation.",
+    "notes": [
+      {
+        "title": "Business Context",
+        "status": "Watch",
+        "text": "The fund depletion pattern is concerning. The dominance of EMT activity (46.5%) concentrated to two individuals (46.4% of outbound funds), combined with significant return items (11.5%) and third-party cash withdrawals (7.9%), deviates substantially from normal personal banking patterns. The high proportion of internal transfers preceding EMT depletion suggests potential pass-through activity."
+      },
+      {
+        "title": "Investigator Notes",
+        "status": "Reviewed",
+        "text": "Transaction velocity and counterparty concentration align with patterns documented in previous investigations."
+      }
+    ]
+  }
+}

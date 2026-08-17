@@ -1,0 +1,14 @@
+{
+  "full": {
+    "label": "Full report",
+    "url": "https://example.com/reports/testbh1151-full-am-search-report.pdf"
+  },
+  "selective": {
+    "label": "Selective report",
+    "url": "https://example.com/reports/testbh1151-selective-am-search-report.pdf"
+  },
+  "narrative": {
+    "label": "case narrative",
+    "url": "https://example.com/reports/testbh1151-case-narrative.pdf"
+  }
+}

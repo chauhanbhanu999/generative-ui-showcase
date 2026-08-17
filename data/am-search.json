@@ -1,0 +1,56 @@
+{
+  "caseName": "testbh1151",
+  "caseSummary": "This case involves multiple counterparties and related parties with varying levels of adverse media findings. Key concern themes include violent crime, sexual offenses, fraud, and drug trafficking across jurisdictions.",
+  "parties": [
+    {
+      "partyName": "GURWINDER SINGH",
+      "role": "Counter Party",
+      "articlesFound": 13,
+      "searchQueryUsed": "\"GURWINDER SINGH\" adverse media criminal conviction",
+      "adverseMediaSummary": "Conviction records and arrest reports in UK, Canada, and India with sexual offense and narcotics-related allegations.",
+      "articles": [
+        {
+          "indexInResults": 1,
+          "title": "Southwark Crown Court convicts Gurwinder Singh",
+          "source": "Court Bulletin",
+          "theme": "Sexual Offenses",
+          "url": "https://example.com/article-1",
+          "summary": "Subject convicted on multiple counts after hotel-lure investigation with potential additional victims."
+        },
+        {
+          "indexInResults": 2,
+          "title": "Surrey police arrest related to Criminal Code offenses",
+          "source": "City News",
+          "theme": "Violence",
+          "url": "https://example.com/article-2",
+          "summary": "Arrest report following vehicle stop and public safety concerns."
+        }
+      ]
+    },
+    {
+      "partyName": "MANJOT SINGH",
+      "role": "Counter Party",
+      "articlesFound": 11,
+      "searchQueryUsed": "\"MANJOT SINGH\" robbery arrest ICE detention",
+      "adverseMediaSummary": "Multiple arrests in the US and links to organized crime allegations in India and Canada.",
+      "articles": [
+        {
+          "indexInResults": 1,
+          "title": "ICE detains Manjot Singh with prior arrests",
+          "source": "US Federal Update",
+          "theme": "Criminal History",
+          "url": "https://example.com/article-3",
+          "summary": "Detention report cites repeated arrests and deportation proceedings."
+        }
+      ]
+    },
+    {
+      "partyName": "2759746 ALBERTA INC.",
+      "role": "Primary Owner",
+      "articlesFound": 0,
+      "searchQueryUsed": "",
+      "adverseMediaSummary": "",
+      "articles": []
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "top_counterparties": {
+    "2506152 ONTARIO INC.": { "count": 18, "ratio": 0.112, "min": 45.12, "max": 9200.0, "total": 35512.28 },
+    "9528-1036 QUEBEC INC.": { "count": 14, "ratio": 0.091, "min": 75.0, "max": 7400.55, "total": 24990.67 },
+    "WAVE - RCCIC": { "count": 9, "ratio": 0.058, "min": 120.5, "max": 6800.0, "total": 15842.11 }
+  },
+  "top_funding_sources": {
+    "EMT": { "count": 31, "ratio": 0.203, "min": 50.0, "max": 15000.0, "total": 109201.75 },
+    "WIRE": { "count": 12, "ratio": 0.079, "min": 350.0, "max": 22000.45, "total": 73450.9 },
+    "CASH": { "count": 8, "ratio": 0.051, "min": 100.0, "max": 5000.0, "total": 18800.0 }
+  },
+  "top_outgoing_types": {
+    "CHEQUE": { "count": 16, "ratio": 0.102, "min": 75.0, "max": 8700.0, "total": 41240.63 },
+    "INTERAC": { "count": 29, "ratio": 0.189, "min": 20.0, "max": 2500.0, "total": 22311.45 },
+    "WIRE": { "count": 7, "ratio": 0.044, "min": 450.0, "max": 12000.0, "total": 39820.0 }
+  },
+  "top_incoming_types": {
+    "PAYROLL": { "count": 22, "ratio": 0.144, "min": 450.0, "max": 6200.0, "total": 59810.2 },
+    "TRANSFER": { "count": 19, "ratio": 0.126, "min": 80.0, "max": 9400.88, "total": 48320.17 },
+    "DEPOSIT": { "count": 11, "ratio": 0.072, "min": 40.0, "max": 3600.0, "total": 15790.45 }
+  }
+}

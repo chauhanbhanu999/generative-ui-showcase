@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 
 import { useGraphChat, type ChatTurn } from "@/hooks/use-graph-chat";
@@ -31,18 +31,15 @@ const ROOT_COMMANDS: { cmd: "ask" | "generate"; label: string; description: stri
 const ASK_QUESTIONS = [
   "Show Top Incoming Type",
   "Show Top Outgoing Type",
-  "Show Transactions",
   "Show Top Incoming Counterparties",
   "Show Top Outgoing Counterparties",
   "What is the primary source of funding for the customer's account?",
   "How are the incoming funds primarily depleted?",
   "Is there evidence of regular personal banking?",
   "Who are the top counterparties that the client is transacting with?",
-  "How rapidly are incoming funds depleted?",
   "How many instances of structuring deposits have occurred within the review period?",
   "Are there any keywords in the EMT/wire/cheque/wire memos indicative of a possible predicate offense?",
   "Is there evidence of business-related activity?",
-  "At what time of day is the customer primarily conducting their transactions?",
   "Create summary",
 ];
 
@@ -108,6 +105,7 @@ export function ChatScreen({ caseInfo }: ChatScreenProps) {
   const { messages, send, isLoading, addLocalTurn, updateTurn } = useGraphChat([welcomeTurn(caseInfo)]);
   const [inputValue, setInputValue] = useState("");
   const [highlightedIndex, setHighlightedIndex] = useState(0);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const slashState = getSlashState(inputValue);
   const menuOptions = getMenuOptions(slashState);
@@ -115,6 +113,15 @@ export function ChatScreen({ caseInfo }: ChatScreenProps) {
   useEffect(() => {
     setHighlightedIndex(0);
   }, [slashState.mode, slashState.query]);
+
+  // Keep the chat pinned to the newest content: new turns, streamed text chunks,
+  // and UI components all update `messages`, so this fires on every one of them.
+  useEffect(() => {
+    const el = scrollContainerRef.current;
+    if (el) {
+      el.scrollTop = el.scrollHeight;
+    }
+  }, [messages]);
 
   function handleGenerateNarrative() {
     addLocalTurn({
@@ -207,7 +214,7 @@ export function ChatScreen({ caseInfo }: ChatScreenProps) {
   return (
     <div className="flex flex-col h-full bg-zinc-50 dark:bg-zinc-900 overflow-hidden font-sans">
       {/* Chat Messages */}
-      <div className="chat-scroll flex-1 overflow-y-auto w-full">
+      <div ref={scrollContainerRef} className="chat-scroll flex-1 overflow-y-auto w-full">
         <div className="p-4 md:p-6 space-y-6 max-w-4xl mx-auto">
           {messages.map((turn, turnIndex) => {
             const isLast = turnIndex === messages.length - 1;

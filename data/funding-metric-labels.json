@@ -1,0 +1,6 @@
+{
+  "top_incoming_types": "Top Incoming Type",
+  "top_outgoing_types": "Top Outgoing Type",
+  "top_funding_sources": "Top Incoming Counterparty",
+  "top_counterparties": "Top Outgoing Counterparty"
+}
