@@ -19,7 +19,7 @@ function welcomeTurn(caseInfo: CaseInfo): ChatTurn {
     text: `You're in the workspace for **${caseLabel(caseInfo)}**. What would you like to do?`,
     ui: null,
     pendingFields: null,
-    suggestions: ["Summarize filings", "Draft email", "Check deadlines"],
+    suggestions: ["Show case overview", "Show adverse media search results"],
   };
 }
 
@@ -102,7 +102,7 @@ function hasCaseSummary(messages: ChatTurn[]): boolean {
 }
 
 export function ChatScreen({ caseInfo }: ChatScreenProps) {
-  const { messages, send, isLoading, addLocalTurn, updateTurn } = useGraphChat([welcomeTurn(caseInfo)]);
+  const { messages, send, isLoading, addLocalTurn, updateTurn } = useGraphChat(caseInfo, [welcomeTurn(caseInfo)]);
   const [inputValue, setInputValue] = useState("");
   const [highlightedIndex, setHighlightedIndex] = useState(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -218,6 +218,20 @@ export function ChatScreen({ caseInfo }: ChatScreenProps) {
         <div className="p-4 md:p-6 space-y-6 max-w-4xl mx-auto">
           {messages.map((turn, turnIndex) => {
             const isLast = turnIndex === messages.length - 1;
+            const suggestionsRow =
+              isLast && !isLoading && turn.suggestions.length > 0 ? (
+                <div className="flex flex-wrap gap-2">
+                  {turn.suggestions.map((question) => (
+                    <button
+                      key={question}
+                      onClick={() => send({ message: question })}
+                      className="text-sm rounded-full border border-blue-600 text-blue-600 dark:text-blue-400 dark:border-blue-400 px-3 py-1.5 font-semibold hover:bg-blue-50 dark:hover:bg-blue-950 transition-colors"
+                    >
+                      {question}
+                    </button>
+                  ))}
+                </div>
+              ) : null;
 
             if (turn.role === "user") {
               return (
@@ -268,24 +282,30 @@ export function ChatScreen({ caseInfo }: ChatScreenProps) {
               const Component = COMPONENT_REGISTRY[turn.ui.component];
               if (Component && turn.ui.component === "download-button") {
                 return (
-                  <div key={turn.id} className="flex justify-start">
-                    <div className="max-w-[85%] rounded-2xl p-4 shadow-sm bg-white dark:bg-zinc-800 border dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 rounded-bl-none">
-                      <Component {...turn.ui.props} />
+                  <div key={turn.id} className="space-y-3">
+                    <div className="flex justify-start">
+                      <div className="max-w-[85%] rounded-2xl p-4 shadow-sm bg-white dark:bg-zinc-800 border dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 rounded-bl-none">
+                        <Component {...turn.ui.props} />
+                      </div>
                     </div>
+                    {suggestionsRow}
                   </div>
                 );
               }
               return (
-                <div key={turn.id} className="flex justify-start">
-                  {Component ? (
-                    <div className="max-w-[85%]">
-                      <Component {...turn.ui.props} />
-                    </div>
-                  ) : (
-                    <div className="max-w-[85%] rounded-xl border border-red-300 bg-red-50 dark:bg-red-950 dark:border-red-800 p-3 text-sm text-red-700 dark:text-red-300">
-                      Unknown component: <code>{turn.ui.component}</code>
-                    </div>
-                  )}
+                <div key={turn.id} className="space-y-3">
+                  <div className="flex justify-start">
+                    {Component ? (
+                      <div className="max-w-[85%]">
+                        <Component {...turn.ui.props} />
+                      </div>
+                    ) : (
+                      <div className="max-w-[85%] rounded-xl border border-red-300 bg-red-50 dark:bg-red-950 dark:border-red-800 p-3 text-sm text-red-700 dark:text-red-300">
+                        Unknown component: <code>{turn.ui.component}</code>
+                      </div>
+                    )}
+                  </div>
+                  {suggestionsRow}
                 </div>
               );
             }
@@ -315,19 +335,7 @@ export function ChatScreen({ caseInfo }: ChatScreenProps) {
                     </div>
                   </div>
                 )}
-                {isLast && !isLoading && turn.suggestions.length > 0 && (
-                  <div className="flex flex-wrap gap-2">
-                    {turn.suggestions.map((question) => (
-                      <button
-                        key={question}
-                        onClick={() => send({ message: question })}
-                        className="text-sm rounded-full border border-blue-600 text-blue-600 dark:text-blue-400 dark:border-blue-400 px-3 py-1.5 font-semibold hover:bg-blue-50 dark:hover:bg-blue-950 transition-colors"
-                      >
-                        {question}
-                      </button>
-                    ))}
-                  </div>
-                )}
+                {suggestionsRow}
               </div>
             );
           })}

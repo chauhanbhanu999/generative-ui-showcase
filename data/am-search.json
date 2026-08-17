@@ -1,55 +1,192 @@
 {
-  "caseName": "testbh1151",
-  "caseSummary": "This case involves multiple counterparties and related parties with varying levels of adverse media findings. Key concern themes include violent crime, sexual offenses, fraud, and drug trafficking across jurisdictions.",
+  "caseName": "test-case",
+  "caseSummary": "This case (aml-testcase) involves multiple counter parties with varying levels of adverse media findings. The most significant concerns involve GURWINDER SINGH, who has multiple legal issues including modern slavery allegations in Saudi Arabia where he was threatened by his employer over unpaid wages, drug-related charges under India's NDPS Act, theft and illegal arms possession charges (later quashed based on compromise), and immigration removal proceedings in the United States. MANJOT SINGH shows a pattern of criminal behavior with at least 6 arrests by local police in the US for robbery, theft, criminal impersonation, and DUI, leading to ICE detention and pending removal proceedings. MOHAMMAD TAREK HASAN CHOWDHURY is involved in serious healthcare fraud, having pleaded guilty to a kickback conspiracy where he and his father received $6.6 million in kickbacks for referring prescriptions to pharmacies as part of a $110 million compound drug scheme; he also violated supervised release conditions and is wanted by UK authorities. Several other counter parties (2506152 ONTARIO INC., 9528-1036 QUEBEC INC., ROBASHI CONSULTANTS INC., WAVE - RCCIC) and the primary owner (2759746 ALBERTA INC.) show no adverse media findings. Common themes across parties include substance abuse-related crimes, violent offenses, labor exploitation, immigration violations, and healthcare fraud. The case presents significant compliance risks particularly related to the parties with criminal histories and ongoing legal proceedings.",
   "parties": [
     {
-      "partyName": "GURWINDER SINGH",
-      "role": "Counter Party",
-      "articlesFound": 13,
-      "searchQueryUsed": "\"GURWINDER SINGH\" adverse media criminal conviction",
-      "adverseMediaSummary": "Conviction records and arrest reports in UK, Canada, and India with sexual offense and narcotics-related allegations.",
+      "partyName": "2759746 ALBERTA INC.",
+      "role": "Primary Party",
+      "articlesFound": 0,
+      "searchQueryUsed": "\"2759746 Alberta Inc.\" \"Edmonton\" \"Ab\" (accus* OR arrest* OR charge* OR convict* OR guilt* OR indict* OR investigat* OR sentence* OR scam* OR brib* OR corrupt* OR counterfeit* OR embezz* OR extort* OR fraud OR judgment OR judgement OR racketeer* OR smuggl* OR kickback* OR extremis* OR scandal* OR sue* OR terrorist* OR traffick* OR violat* OR crime OR illegal* OR launder* OR narcotic*)",
+      "adverseMediaSummary": "No adverse media content found.",
+      "articles": []
+    },
+    {
+      "partyName": "MOHAMMAD TAREK HASAN CHOWDHURY",
+      "role": "Related Party",
+      "articlesFound": 5,
+      "searchQueryUsed": "\"Mohammad Chowdhury\" \"Edmonton\" (accus* OR arrest* OR charge* OR convict* OR guilt* OR indict* OR investigat* OR sentence* OR scam* OR brib* OR corrupt* OR counterfeit* OR embezz* OR extort* OR fraud OR judgment OR judgement OR racketeer* OR smuggl* OR kickback* OR extremis* OR scandal* OR sue* OR terrorist* OR traffick* OR violat* OR crime OR illegal* OR launder* OR narcotic*)",
+      "adverseMediaSummary": "Mohammad Chowdhury has been involved in multiple criminal cases involving healthcare fraud and kickback schemes. He was initially convicted and received a lenient sentence of 2 months incarceration, which was later increased to 12 months after violating supervised release conditions, including engaging in new fraudulent conduct and fleeing jurisdiction. Subsequently, Mohammad Chowdhury (43) and his father Dr. Tajul Shams Chowdhury (75) pleaded guilty to conspiring to receive kickbacks in exchange for referring prescriptions to local pharmacies. Mohammad worked as a marketer and received $6.6 million in kickback payments for prescriptions of costly compound drugs referred from his father's pain management clinic. They were also charged as part of a larger $110 million compound drug scheme involving Pharr Family Pharmacy, where Mohammad served as a conduit for kickback payments between the pharmacy owner and physicians, including paying his own father for prescription referrals. The scheme involved billing federal health care programs over $110 million in false and fraudulent claims between May 2014 and September 2016. Charges include conspiracy to commit health care fraud, health care fraud, conspiracy to pay and receive illegal kickbacks, and conspiracy to commit money laundering.",
       "articles": [
         {
           "indexInResults": 1,
-          "title": "Southwark Crown Court convicts Gurwinder Singh",
-          "source": "Court Bulletin",
-          "theme": "Sexual Offenses",
-          "url": "https://example.com/article-1",
-          "summary": "Subject convicted on multiple counts after hotel-lure investigation with potential additional victims."
+          "title": "USA v. Mohammad Chowdhury, No. 11-3003 (6th Cir. 2011)",
+          "source": "law.justia.com",
+          "theme": "Financial Crime, Legal Issues, Misconduct & Ethics",
+          "url": "https://law.justia.com/cases/federal/appellate-courts/ca6/11-3003/11a0689n-06-2011-09-28.html",
+          "summary": "Chowdhury received a lenient sentence of 2 months incarceration and 2 years supervised release after a guilty plea. He subsequently violated multiple conditions of his supervised release, including engaging in new fraudulent conduct, fleeing to another district, and failing to appear at his supervised release revocation hearing. The district court increased his sentence to 12 months incarceration, citing his non-compliance with supervised release conditions, failure to appear in court, and ongoing investigation for further fraudulent conduct. Chowdhury appealed, arguing the sentence was unreasonable because the court allegedly considered an impermissible factor (his upcoming immigration hearing). The appellate court reviewed the sentence for reasonableness."
         },
         {
           "indexInResults": 2,
-          "title": "Surrey police arrest related to Criminal Code offenses",
-          "source": "City News",
-          "theme": "Violence",
-          "url": "https://example.com/article-2",
-          "summary": "Arrest report following vehicle stop and public safety concerns."
+          "title": "Mohammad CHOWDHURY - Most Wanted | Crimestoppers",
+          "source": "crimestoppers-uk.org",
+          "theme": "Legal Issues",
+          "url": "https://crimestoppers-uk.org/give-information/most-wanted/appeal?ID=57521",
+          "summary": "Mohammad Chowdhury, a Bangladeshi national aged 45-50, is wanted by authorities. He was arrested in 2010 and his current whereabouts are unknown. Chowdhury has known links to the Anglesey and Caernarfon areas of North Wales as well as London. Information regarding his current location is being sought through Crimestoppers, with appeals for anonymous tips from the public."
+        },
+        {
+          "indexInResults": 3,
+          "title": "Edinburg doctor and son guilty in kickback conspiracy | National Insurance Crime Bureau",
+          "source": "www.nicb.org",
+          "theme": "Corruption & Bribery, Financial Crime, Legal Issues, Professional Misconduct, Misconduct & Ethics",
+          "url": "https://www.nicb.org/news/regional-news/edinburg-doctor-and-son-guilty-kickback-conspiracy",
+          "summary": "Dr. Tajul Shams Chowdhury, a 75-year-old Edinburg physician who owned and operated the Center for Pain Management, and his 43-year-old son Mohammad Imtiaz Chowdhury pleaded guilty to conspiring to receive kickbacks in exchange for referring prescriptions to local pharmacies. Mohammad Chowdhury worked as a purported marketer for a local pharmacy and received $6.6 million in kickback payments for prescriptions of costly compound drugs referred from his father's clinic. Both men remain on bond pending sentencing scheduled for March 25 before Chief U.S. District Judge Randy Crane."
+        },
+        {
+          "indexInResults": 4,
+          "title": "Seven charged for roles in a $110 million compound drug ...",
+          "source": "oig.dol.gov",
+          "theme": "Financial Crime, Corruption & Bribery, Legal Issues, Professional Misconduct, Misconduct & Ethics",
+          "url": "https://oig.dol.gov/public/Press%20Releases/Seven_charged_for_roles_in_$110_million_compound_drug_scheme_USAO_SD_TX_06172021.pdf",
+          "summary": "Seven individuals have been charged in a $110 million compound drug scheme involving Pharr Family Pharmacy (PFP). John Ageudo Rodriguez, the pharmacy owner, allegedly paid millions in kickbacks to marketers and physicians for referring prescriptions for high-reimbursing compound drugs that were often medically unnecessary. The scheme involved Dr. Mohammad Imtiaz Chowdhury paying kickbacks to his father Dr. Tajul Shams Chowdhury for prescription referrals, while clinic employees Araceli Gaona and Erika Hernandez Salinas facilitated the kickback payments. Marketers Mohammad Chowdhury, Alex Flores Jr., and Hector DeLaCruz served as conduits for the kickback scheme. From May 2014 to September 2016, PFP billed federal health care programs over $110 million with false and fraudulent claims. All seven defendants face charges including conspiracy to commit health care fraud, health care fraud, conspiracy to pay and receive illegal kickbacks, and conspiracy to commit money laundering."
+        },
+        {
+          "indexInResults": 5,
+          "title": "H:\\Criminal\\guiltyplea order - HIStranscript",
+          "source": "www.govinfo.gov",
+          "theme": "Legal Issues",
+          "url": "https://www.govinfo.gov/content/pkg/USCOURTS-ohnd-3_08-cr-00228/pdf/USCOURTS-ohnd-3_08-cr-00228-0.pdf",
+          "summary": "Mohammad Chowdhury is involved in a criminal case (Case No. 3:08cr228) in the United States District Court for the Northern District of Ohio Western Division. The case was referred to United States Magistrate Judge Vernelis K. Armstrong for taking a guilty plea on consent of the parties. The Magistrate Judge has filed a Report & Recommendation with no objections filed."
         }
       ]
     },
     {
-      "partyName": "MANJOT SINGH",
+      "partyName": "2506152 ONTARIO INC.",
       "role": "Counter Party",
-      "articlesFound": 11,
-      "searchQueryUsed": "\"MANJOT SINGH\" robbery arrest ICE detention",
-      "adverseMediaSummary": "Multiple arrests in the US and links to organized crime allegations in India and Canada.",
+      "articlesFound": 0,
+      "searchQueryUsed": "\"2506152 Ontario Inc.\" (accus* OR arrest* OR charge* OR convict* OR guilt* OR indict* OR investigat* OR sentence* OR scam* OR brib* OR corrupt* OR counterfeit* OR embezz* OR extort* OR fraud OR judgment OR judgement OR racketeer* OR smuggl* OR kickback* OR extremis* OR scandal* OR sue* OR terrorist* OR traffick* OR violat* OR crime OR illegal* OR launder* OR narcotic*)",
+      "adverseMediaSummary": "No adverse media content found.",
+      "articles": []
+    },
+    {
+      "partyName": "9528-1036 QUEBEC INC.",
+      "role": "Counter Party",
+      "articlesFound": 0,
+      "searchQueryUsed": "\"9528-1036 Quebec Inc.\" (accus* OR arrest* OR charge* OR convict* OR guilt* OR indict* OR investigat* OR sentence* OR scam* OR brib* OR corrupt* OR counterfeit* OR embezz* OR extort* OR fraud OR judgment OR judgement OR racketeer* OR smuggl* OR kickback* OR extremis* OR scandal* OR sue* OR terrorist* OR traffick* OR violat* OR crime OR illegal* OR launder* OR narcotic*)",
+      "adverseMediaSummary": "No adverse media content found.",
+      "articles": []
+    },
+    {
+      "partyName": "GURWINDER SINGH",
+      "role": "Counter Party",
+      "articlesFound": 5,
+      "searchQueryUsed": "\"Gurwinder Singh\" (accus* OR arrest* OR charge* OR convict* OR guilt* OR indict* OR investigat* OR sentence* OR scam* OR brib* OR corrupt* OR counterfeit* OR embezz* OR extort* OR fraud OR judgment OR judgement OR racketeer* OR smuggl* OR kickback* OR extremis* OR scandal* OR sue* OR terrorist* OR traffick* OR violat* OR crime OR illegal* OR launder* OR narcotic*)",
+      "adverseMediaSummary": "Multiple articles reference individuals named Gurwinder Singh in various legal contexts. One case involves a 26-year-old Indian migrant worker from Punjab who traveled to Saudi Arabia in 2015 as a Heavy Goods Driver and experienced wage theft and death threats from his employer Ayub Abdullah Al Zunedi under the Kafala system, representing labor exploitation and modern slavery. Separate legal cases in India involve different individuals with the same name: one facing charges under the Narcotic Drugs & Psychotropic Substances Act for possession of tablets with procedural challenges regarding search protocols, and another case involving theft and illegal arms possession charges that was subsequently quashed based on a compromise between parties. Additional references include immigration and drug trafficking cases in U.S. courts.",
       "articles": [
         {
           "indexInResults": 1,
-          "title": "ICE detains Manjot Singh with prior arrests",
-          "source": "US Federal Update",
-          "theme": "Criminal History",
-          "url": "https://example.com/article-3",
-          "summary": "Detention report cites repeated arrests and deportation proceedings."
+          "title": "Modern Slavery:Gurwinder Singh,migrant worker pleads to be repatriated",
+          "source": "www.crowdjustice.com",
+          "theme": "Labor & Employment Violations, Human Rights Violations, Violence & Harm",
+          "url": "https://www.crowdjustice.com/case/help-guwinder-get-justice",
+          "summary": "Gurwinder Singh, a 26-year-old Indian national from Punjab, traveled to Saudi Arabia in December 2015 to work as a Heavy Goods Driver. His employer, Ayub Abdullah Al Zunedi in Riyadh, failed to pay his salary for the first three months of employment. When Gurwinder confronted his employer about the unpaid wages, he alleges that Al Zunedi threatened to kill him. The case involves the 'Kafala' system and highlights labor exploitation. Gurwinder Singh lacks the financial means to pursue his case through the courts to assert his human rights."
+        },
+        {
+          "indexInResults": 2,
+          "title": "GURWINDER SINGH @ JANGIRA v. STATE OF PUNJAB | Punjab & Haryana High Court | Judgment | Law | CaseMine",
+          "source": "www.casemine.com",
+          "theme": "Criminal Activity, Legal Issues, Substance Abuse & Related Crimes, Regulatory & Compliance",
+          "url": "https://www.casemine.com/judgement/in/639c85bfb642790329c76ac3",
+          "summary": "Surinder Singh @ Kala and Gurwinder Singh @ Jangira were apprehended by police near Sappa Wala Dera on miner bridge when officers observed them in possession of a strip of tablets. The suspects attempted to conceal the tablets upon seeing police. A petition for regular bail was filed under Section 439 for FIR No.172 dated July 16, 2022, registered under Section 22 of the Narcotic Drugs & Psychotropic Substances Act, 1985. The case involves procedural challenges regarding the search and recovery of contraband, specifically that the search was not conducted in the presence of a Magistrate or Gazetted Officer as required under Section 50 of the NDPS Act, and that the police officials conducting the raid were not empowered to make such search and recovery without proper authority."
+        },
+        {
+          "indexInResults": 3,
+          "title": "GURWINDER SINGH ALIAS AFRIDI AND ORS v. STATE OF PUNJAB AND ANOTHER | Punjab & Haryana High Court | Judgment | Law | CaseMine",
+          "source": "www.casemine.com",
+          "theme": "Criminal Activity, Legal Issues, Sanctions & Compliance",
+          "url": "https://www.casemine.com/judgement/in/65c57a78f1683c735e0296a9",
+          "summary": "Gurwinder Singh alias Afridi and others filed a petition under Section 482 of Cr.P.C. seeking quashing of FIR No.111 dated 09.08.2021 registered under Sections 380, 457 of Indian Penal Code and Section 25 Arms Act, 1959 at Police Station Sadar Patti, District Tarn Taran. The case involved charges related to theft and illegal possession of arms. The Punjab and Haryana High Court allowed the petition based on a compromise between the parties and quashed the FIR and all subsequent proceedings against the petitioners on 21.09.2021."
+        },
+        {
+          "indexInResults": 4,
+          "title": "Prolonged Incarceration as Grounds for Bail under UAPA - Supreme Court Observer",
+          "source": "www.scobserver.in",
+          "theme": "Criminal Activity, Legal Issues, Regulatory & Compliance",
+          "url": "https://www.scobserver.in/supreme-court-observer-law-reports-scolr/prolonged-incarceration-as-grounds-for-bail-under-uapa",
+          "summary": "Mudasir Ahmad Dar (Accused No. 12) was granted bail by the High Court after spending 4 years and 6 months in custody, overturning the Special NIA Court's rejection. He was accused of being a narcotic drug peddler providing logistic support to co-accused. The High Court found no material evidence that he directly engaged in narcotics sales or received funds from such activities. The case discusses judicial precedents regarding bail in serious offences, emphasizing that Article 21 constitutional rights to speedy trial apply regardless of the nature of the crime, and that more serious accusations should warrant speedier trials rather than prolonged detention."
+        },
+        {
+          "indexInResults": 5,
+          "title": "2025 Fourth Circuit U.S. Court of Appeals Case Law",
+          "source": "law.justia.com",
+          "theme": "Legal Issues, Criminal Activity, Regulatory & Compliance",
+          "url": "https://law.justia.com/cases/federal/appellate-courts/ca4/2025",
+          "summary": "Multiple legal cases involving immigration removal proceedings and federal prison sentencing matters. Martinez-Martinez v. Bondi involves a Mexican citizen in removal proceedings who applied for cancellation of removal after a 2014 misdemeanor charge. Gurwinder Singh v. Pamela Bondi is an immigration-related case. Bonnie v. Dunbar concerns Gregory Bonnie serving a 144-month federal prison sentence in South Carolina for drug trafficking convictions and supervised release violations. David Bell v. US is a federal legal matter. These cases represent routine legal proceedings without specific adverse media or concerning information about misconduct by the named parties."
         }
       ]
     },
     {
-      "partyName": "2759746 ALBERTA INC.",
-      "role": "Primary Owner",
+      "partyName": "Manjot singh",
+      "role": "Counter Party",
+      "articlesFound": 5,
+      "searchQueryUsed": "\"Manjot Singh\" (accus* OR arrest* OR charge* OR convict* OR guilt* OR indict* OR investigat* OR sentence* OR scam* OR brib* OR corrupt* OR counterfeit* OR embezz* OR extort* OR fraud OR judgment OR judgement OR racketeer* OR smuggl* OR kickback* OR extremis* OR scandal* OR sue* OR terrorist* OR traffick* OR violat* OR crime OR illegal* OR launder* OR narcotic*)",
+      "adverseMediaSummary": "Manjot Singh, a 25-year-old Indian national, was arrested jointly by ICE Seattle, HSI Seattle, and US Border Patrol for illegal entry into the United States and repeated criminal activity. Singh has been arrested at least six times by local law enforcement, with a criminal history including robbery, theft, criminal impersonation, and DUI. He is currently held in ICE custody pending removal proceedings and deportation. A criminal complaint was filed against him on March 20, 2026, with an arrest warrant executed on March 23, 2026, and an initial court appearance scheduled for March 26, 2026. This detention is part of enhanced immigration enforcement efforts that have resulted in over 1,000 Indian nationals being deported since January 2025.",
+      "articles": [
+        {
+          "indexInResults": 1,
+          "title": "ICE Seattle on X: \"Arrested jointly by @EROSeattle @HSISeattle @USBPChiefBLW, Manjot Singh, 25, is a citizen of India arrested at least 6 times by local police. Singh's criminal history includes robbery, theft, criminal impersonation, and DUI. He'll stay in ICE custody pending removal proceedings.\" / X",
+          "source": "x.com",
+          "theme": "Criminal Activity, Legal Issues, Substance Abuse & Related Crimes",
+          "url": "https://x.com/EROSeattle/status/1948059029810614360",
+          "summary": "Manjot Singh, a 25-year-old citizen of India, was arrested jointly by ICE Seattle, HSI Seattle, and US Border Patrol. Singh has been arrested at least 6 times by local police with a criminal history that includes robbery, theft, criminal impersonation, and DUI. He is being held in ICE custody pending removal proceedings."
+        },
+        {
+          "indexInResults": 2,
+          "title": "Who Is Manjot Singh, Indian Detained By US Immigration After 6 Arrests",
+          "source": "www.ndtv.com",
+          "theme": "Criminal Activity, Legal Issues, Substance Abuse & Related Crimes, Sanctions & Compliance",
+          "url": "https://www.ndtv.com/world-news/who-is-manjot-singh-indian-detained-by-us-immigration-after-6-arrests-8972029",
+          "summary": "Manjot Singh, a 25-year-old Indian national, has been detained by US Immigration and Customs Enforcement (ICE) for illegal entry into the United States and repeated criminal activity. Singh has been arrested at least six times by local law enforcement, with a criminal history that includes robbery, theft, criminal impersonation, and DUI. He was apprehended in a joint operation by ERO Seattle, HSI Seattle, and US Border Patrol's Blaine Sector. Singh is currently in ICE custody pending removal proceedings and deportation. This detention is part of the Trump administration's enhanced immigration enforcement efforts, which have resulted in over 1,000 Indian nationals being deported since January 2025."
+        },
+        {
+          "indexInResults": 3,
+          "title": "Albert Law PLLC | Manjot Singh Mathoda | Albert Law PLLC | Call 206-576-8044",
+          "source": "albertlawpllc.com",
+          "theme": "No Adverse Information - Professional Biography",
+          "url": "https://albertlawpllc.com/manjot-singh-mathoda",
+          "summary": "This content is a professional biography and contact information for Manjot, a legal professional at Albert Law PLLC in Seattle. The article describes his background, upbringing in Chandigarh, India in a Sikh family, his professional philosophy influenced by his father's advice about dedication in white-collar professions, and his current role supporting the firm through legal research, writing, and case management. The content is promotional in nature, highlighting his work ethic, values, and approach to legal practice. No adverse media, legal issues, or concerning information is present."
+        },
+        {
+          "indexInResults": 4,
+          "title": "United States v. Singh, 4:26-mj-03034 – CourtListener.com",
+          "source": "www.courtlistener.com",
+          "theme": "Legal Issues",
+          "url": "https://www.courtlistener.com/docket/72524985/united-states-v-singh",
+          "summary": "Manjot Singh is the subject of a criminal complaint filed on March 20, 2026. An arrest warrant was issued and subsequently executed on March 23, 2026. An initial appearance hearing has been scheduled for March 26, 2026 before Magistrate Judge Jacqueline M. DeLuca. The case involves restricted court documents pursuant to the E-Government Act and Federal Rule of Criminal Procedure 49.1(a). Specific charges and details of the alleged criminal activity are not disclosed in the available court docket entries."
+        },
+        {
+          "indexInResults": 5,
+          "title": "[Solved] Manjot Singh and Gurkirat Singh Case in Brampton use criminal code of canada ... | CliffsNotes",
+          "source": "www.cliffsnotes.com",
+          "theme": "Legal/Educational Reference Material - No Adverse Content",
+          "url": "https://www.cliffsnotes.com/tutors-problems/Law/50390499--Manjot-Singh-and-Gurkirat-Singh-Case-in-Brampton-use-criminal",
+          "summary": "This content appears to be educational material or training documentation related to Canadian criminal law procedures and court forms. It outlines various legal forms used in criminal proceedings including DNA warrants, search warrants, arrest warrants, summons, release orders, bail procedures, witness subpoenas, and sentencing documentation. The material references specific sections of Canadian criminal code and discusses procedures for charges, pleas, trials, and sentencing outcomes. This appears to be instructional content for legal professionals or students rather than adverse media about a specific individual or entity."
+        }
+      ]
+    },
+    {
+      "partyName": "ROBASHI CONSULTANTS INC.",
+      "role": "Counter Party",
       "articlesFound": 0,
-      "searchQueryUsed": "",
-      "adverseMediaSummary": "",
+      "searchQueryUsed": "\"Robashi Consultants Inc.\" (accus* OR arrest* OR charge* OR convict* OR guilt* OR indict* OR investigat* OR sentence* OR scam* OR brib* OR corrupt* OR counterfeit* OR embezz* OR extort* OR fraud OR judgment OR judgement OR racketeer* OR smuggl* OR kickback* OR extremis* OR scandal* OR sue* OR terrorist* OR traffick* OR violat* OR crime OR illegal* OR launder* OR narcotic*)",
+      "adverseMediaSummary": "No adverse media content found.",
+      "articles": []
+    },
+    {
+      "partyName": "WAVE - RCCIC",
+      "role": "Counter Party",
+      "articlesFound": 0,
+      "searchQueryUsed": "\"Wave - Rccic\" (accus* OR arrest* OR charge* OR convict* OR guilt* OR indict* OR investigat* OR sentence* OR scam* OR brib* OR corrupt* OR counterfeit* OR embezz* OR extort* OR fraud OR judgment OR judgement OR racketeer* OR smuggl* OR kickback* OR extremis* OR scandal* OR sue* OR terrorist* OR traffick* OR violat* OR crime OR illegal* OR launder* OR narcotic*)",
+      "adverseMediaSummary": "No adverse media content found.",
       "articles": []
     }
   ]

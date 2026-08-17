@@ -1,0 +1,35 @@
+{
+  "SONYA CARTER": {
+    "partyName": "SONYA CARTER",
+    "role": "Counter Party",
+    "articlesFound": 2,
+    "searchQueryUsed": "\"Sonya Carter\" (accus* OR arrest* OR charge* OR convict* OR guilt* OR indict* OR investigat* OR sentence* OR scam* OR brib* OR corrupt* OR counterfeit* OR embezz* OR extort* OR fraud OR judgment OR judgement OR racketeer* OR smuggl* OR kickback* OR extremis* OR scandal* OR sue* OR terrorist* OR traffick* OR violat* OR crime OR illegal* OR launder* OR narcotic*)",
+    "adverseMediaSummary": "Shaquettia Sonya Carter, 40, was sentenced to 14 years in the Texas penitentiary for manslaughter in the death of Hayley Darnell. The sentencing occurred on July 16 in the 355th District Court of Hood County. Carter will be eligible for parole after serving half of her sentence.",
+    "articles": [
+      {
+        "indexInResults": 1,
+        "title": "Shaquettia Sonya Carter sentenced to prison in death of Hayley Darnell - Hood County News",
+        "source": "www.hcnews.com",
+        "theme": "Legal Issues, Violence & Harm, Criminal Activity",
+        "url": "https://www.hcnews.com/stories/shaquettia-sonya-carter-sentenced-to-prison-in-death-of-hayley-darnell,44183",
+        "summary": "Shaquettia Sonya Carter, 40, was sentenced to 14 years in the Texas penitentiary for the manslaughter death of Hayley Darnell. The sentencing took place on July 16 in the 355th District Court of Hood County. Carter will be eligible for parole after serving half of her sentence."
+      },
+      {
+        "indexInResults": 2,
+        "title": "McLennan County District Clerk 2025 Indictments",
+        "source": "www.mclennan.gov",
+        "theme": "Criminal Activity, Legal Issues, Substance Abuse & Related Crimes, Violence & Harm",
+        "url": "https://www.mclennan.gov/DocumentCenter/View/17929/2025_Indictments-PDF",
+        "summary": "Multiple individuals were indicted on January 2, 2025, in Texas on various criminal charges. Kody Lee Carter faces charges for possession of cocaine with intent to deliver. Shaquettia Sonya Carter was charged with assault on a peace officer. Francesca Marie Castro faces unauthorized use of a vehicle charges. Austin Chatman and Christopher Michael Coleman were separately charged with possession of controlled substances (methamphetamine and cocaine respectively). Coleman also faces additional charges of unlawful possession of a firearm by a felon and making terroristic threats. Tiffaney Margaret Crowder was indicted on multiple counts including two counts of assault against hospital personnel and harassment of a public servant."
+      }
+    ]
+  },
+  "AMAZON CHANNELS": {
+    "partyName": "AMAZON CHANNELS",
+    "role": "Counter Party",
+    "articlesFound": 0,
+    "searchQueryUsed": "\"Amazon Channels\" (accus* OR arrest* OR charge* OR convict* OR guilt* OR indict* OR investigat* OR sentence* OR scam* OR brib* OR corrupt* OR counterfeit* OR embezz* OR extort* OR fraud OR judgment OR judgement OR racketeer* OR smuggl* OR kickback* OR extremis* OR scandal* OR sue* OR terrorist* OR traffick* OR violat* OR crime OR illegal* OR launder* OR narcotic*)",
+    "adverseMediaSummary": "No adverse media content found.",
+    "articles": []
+  }
+}

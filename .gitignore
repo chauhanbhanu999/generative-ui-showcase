@@ -60,6 +60,8 @@ node_modules/
 .DS_Store
 *.pem
 *.log
+*.pdf
+*.zip
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

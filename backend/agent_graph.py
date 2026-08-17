@@ -23,6 +23,8 @@ class GraphState(TypedDict, total=False):
     extracted_fields: dict
     missing_fields: list[str]
     suggested_questions: list[str]
+    case_name: str
+    llm_context: list[dict]
 
 
 # --- Deterministic config: this is the only place intent -> component is decided ---
@@ -40,14 +42,15 @@ REQUIRED_FIELDS: dict[str, set[str]] = {
     "am_search": set(),
     "funding_table": set(),
     "download": {"report_type"},
-    "llm_context": {"action", "article_reference"},
+    "llm_context": {"action", "party_name", "article_index"},
     "general": set(),
 }
 
 PROMPT_FOR: dict[str, str] = {
     "report_type": "Which report would you like to download - the full report, the selective report, or the case narrative?",
     "action": "Would you like to add or remove it?",
-    "article_reference": "Which article - party name and article number?",
+    "party_name": "Which party is the article about?",
+    "article_index": "What is the article number?",
 }
 
 
@@ -159,9 +162,24 @@ CLASSIFY_SYSTEM = (
     "'funding_table' - wants a funding/transaction/counterparty analysis breakdown as a table.\n"
     "'download' - wants to download a report: the full AM search report, the selective AM search "
     "report, or the case narrative.\n"
-    "'llm_context' - wants to add or remove a specific adverse-media article to/from the LLM context.\n"
+    "'llm_context' - wants to add or remove a specific adverse-media article to/from the LLM context. "
+    "Any message about the LLM context - even one that also mentions 'search' or 'results' - is "
+    "'llm_context', never 'am_search'.\n"
     "'general' - anything else, including questions about the data or casual conversation."
 )
+
+# The four suggestion chips this app itself renders (welcomeTurn's two and
+# suggest_next_questions' two llm_context ones) are fixed strings with a known,
+# unambiguous intent - classifying them through the LLM is both wasted latency and
+# a real misclassification risk (e.g. "Remove from LLM context" getting read as
+# am_search because it also mentions "search results" from the prior turn's
+# history). Match them deterministically before ever calling classify_llm.
+DETERMINISTIC_INTENTS: dict[str, Intent] = {
+    "show case overview": "case_dossier",
+    "show adverse media search results": "am_search",
+    "add to llm context": "llm_context",
+    "remove from llm context": "llm_context",
+}
 
 
 class IntentResult(pydantic.BaseModel):
@@ -181,13 +199,14 @@ DOWNLOAD_EXTRACTION_SYSTEM = (
 
 class LlmContextFields(pydantic.BaseModel):
     action: Literal["add", "remove"] | None = None
-    article_reference: str | None = None
+    party_name: str | None = None
+    article_index: int | None = None
 
 
 LLM_CONTEXT_EXTRACTION_SYSTEM = (
     "Extract whether the user wants to 'add' or 'remove' an adverse-media article to/from the LLM "
-    "context, and which article they mean (e.g. a party name and/or article number). Leave a field "
-    "null if it isn't clearly stated - never guess or invent a value."
+    "context, the name of the party the article is about, and the article's number (indexInResults). "
+    "Leave a field null if it isn't clearly stated - never guess or invent a value."
 )
 
 
@@ -210,6 +229,9 @@ general_llm = ChatOpenAI(model=_MODEL_NAME, streaming=True)
 # --- Nodes ---
 
 async def classify_intent(state: GraphState) -> dict:
+    deterministic = DETERMINISTIC_INTENTS.get(_last_human_text(state).strip().lower())
+    if deterministic is not None:
+        return {"intent": deterministic}
     result = await classify_llm.ainvoke([SystemMessage(content=CLASSIFY_SYSTEM), *state["messages"]])
     return {"intent": result.intent}
 
@@ -273,25 +295,100 @@ def ask_for_missing_fields(state: GraphState) -> dict:
     return {"extracted_fields": merged}
 
 
+def case_dossier_props(case_name: str | None) -> dict:
+    # CASE_DOSSIER_DATA is a fixed fixture; the case name/id shown must reflect
+    # whatever case the user actually entered on the seed screen, so both are
+    # substituted in rather than left as the fixture's own "testbh1151".
+    if not case_name:
+        return CASE_DOSSIER_DATA
+    fixture_case_name = CASE_DOSSIER_DATA["caseName"]
+    props = dict(CASE_DOSSIER_DATA)
+    props["caseName"] = case_name
+    props["caseId"] = CASE_DOSSIER_DATA["caseId"].replace(fixture_case_name, case_name)
+    return props
+
+
+def am_search_props(state: GraphState) -> dict:
+    # Stamps each article with whether it's currently in the LLM context (tracked
+    # in state.llm_context, toggled by render_llm_context_action) so the "in LLM
+    # context" pill next to every article always reflects the latest add/remove.
+    in_context = {(c["partyName"], c["articleIndex"]) for c in state.get("llm_context", [])}
+    props = dict(AM_SEARCH_DATA)
+    props["parties"] = [
+        {
+            **party,
+            "articles": [
+                {**article, "inLlmContext": (party["partyName"], article["indexInResults"]) in in_context}
+                for article in party["articles"]
+            ],
+        }
+        for party in AM_SEARCH_DATA["parties"]
+    ]
+    return props
+
+
+def find_am_search_article(party_name: str, article_index: int) -> dict | None:
+    needle = party_name.strip().lower()
+    for party in AM_SEARCH_DATA["parties"]:
+        if party["partyName"].strip().lower() == needle:
+            for article in party["articles"]:
+                if article["indexInResults"] == article_index:
+                    return {"partyName": party["partyName"], "articleIndex": article_index}
+    return None
+
+
+def render_llm_context_action(state: GraphState) -> dict:
+    fields = state.get("extracted_fields", {})
+    action = fields.get("action")
+    party_name = str(fields.get("party_name") or "").strip()
+    try:
+        article_index = int(fields.get("article_index"))
+    except (TypeError, ValueError):
+        article_index = None
+
+    match = find_am_search_article(party_name, article_index) if party_name and article_index is not None else None
+    if match is None:
+        push_text_message(
+            f"I couldn't find article {fields.get('article_index') or '?'} for "
+            f"\"{party_name or 'that party'}\" in this case's search results."
+        )
+        return {}
+
+    context = state.get("llm_context", [])
+    is_present = match in context
+
+    if action == "add":
+        if is_present:
+            push_text_message(f"Article {match['articleIndex']} for {match['partyName']} is already in the LLM context.")
+            return {}
+        push_text_message(f"Done — added article {match['articleIndex']} for {match['partyName']} to the LLM context.")
+        return {"llm_context": context + [match]}
+
+    if action == "remove":
+        if not is_present:
+            push_text_message(f"Article {match['articleIndex']} for {match['partyName']} isn't in the LLM context.")
+            return {}
+        push_text_message(f"Done — removed article {match['articleIndex']} for {match['partyName']} from the LLM context.")
+        return {"llm_context": [c for c in context if c != match]}
+
+    push_text_message("Please specify whether to add or remove the article.")
+    return {}
+
+
 def render_component(state: GraphState) -> dict:
     intent = state["intent"]
 
     if intent == "llm_context":
-        fields = state.get("extracted_fields", {})
-        action = fields.get("action", "update")
-        article = fields.get("article_reference", "the article")
-        verb = {"add": "added to", "remove": "removed from"}.get(action, "updated in")
-        push_text_message(f"Done — {article} has been {verb} the LLM context.")
-        return {}
+        return render_llm_context_action(state)
 
     component = COMPONENT_BY_INTENT.get(intent)
     if component is None:
         return {}
 
     if intent == "case_dossier":
-        props = CASE_DOSSIER_DATA
+        props = case_dossier_props(state.get("case_name"))
     elif intent == "am_search":
-        props = AM_SEARCH_DATA
+        props = am_search_props(state)
     elif intent == "funding_table":
         fields = state.get("extracted_fields", {})
         metric_key = fields.get("metric_key")
@@ -309,7 +406,10 @@ def render_component(state: GraphState) -> dict:
 
 async def suggest_next_questions(state: GraphState) -> dict:
     if state.get("intent") == "am_search":
-        return {"suggested_questions": ["Add a result to LLM context", "Remove a result from LLM context"]}
+        suggestions = ["Add to LLM context"]
+        if state.get("llm_context"):
+            suggestions.append("Remove from LLM context")
+        return {"suggested_questions": suggestions}
     try:
         result = await suggest_llm.ainvoke([
             SystemMessage(content=SUGGEST_SYSTEM),

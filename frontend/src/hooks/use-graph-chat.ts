@@ -1,5 +1,7 @@
 import { useCallback, useRef, useState } from "react";
 
+import type { CaseInfo } from "@/lib/case-session";
+
 export interface FieldPrompt {
   field: string;
   prompt: string;
@@ -27,7 +29,7 @@ interface SendOptions {
 
 const ENDPOINT = "/api/agent";
 
-export function useGraphChat(initialMessages: ChatTurn[] = []) {
+export function useGraphChat(caseInfo: CaseInfo, initialMessages: ChatTurn[] = []) {
   const [messages, setMessages] = useState<ChatTurn[]>(initialMessages);
   const [isLoading, setIsLoading] = useState(false);
   const threadIdRef = useRef<string>(crypto.randomUUID());
@@ -80,7 +82,7 @@ export function useGraphChat(initialMessages: ChatTurn[] = []) {
     try {
       const body = isResume
         ? { thread_id: threadIdRef.current, resume: options.resume }
-        : { thread_id: threadIdRef.current, message: options.message };
+        : { thread_id: threadIdRef.current, message: options.message, case_name: caseInfo.id };
 
       const response = await fetch(ENDPOINT, {
         method: "POST",

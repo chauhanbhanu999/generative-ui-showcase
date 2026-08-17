@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import asyncio
 import json
+import random
 import sys
 import warnings
 from contextlib import asynccontextmanager
@@ -53,10 +55,23 @@ class ChatRequest(pydantic.BaseModel):
     thread_id: str
     message: str | None = None
     resume: dict[str, Any] | None = None
+    case_name: str | None = None
 
 
 def sse_event(event: str, data: Any) -> str:
     return f"event: {event}\ndata: {json.dumps(data)}\n\n"
+
+
+async def fake_stream_text(content: str) -> AsyncGenerator[str, None]:
+    # Emits a canned answer as word-by-word "message" SSE frames with small random
+    # delays, so a precomputed JSON lookup renders the same way token-by-token LLM
+    # output does (extract_general's real streaming in agent_graph.py) instead of
+    # popping in all at once.
+    words = content.split(" ")
+    for i, word in enumerate(words):
+        chunk = word if i == 0 else " " + word
+        yield sse_event("message", {"content": chunk})
+        await asyncio.sleep(random.uniform(0.015, 0.05))
 
 
 def _sse_response(event_stream: AsyncGenerator[str, None]) -> fastapi.responses.StreamingResponse:
@@ -83,7 +98,8 @@ async def chat(request: ChatRequest) -> fastapi.responses.StreamingResponse:
                 if canned["kind"] == "ui":
                     yield sse_event("ui", {"component": canned["component"], "props": canned["props"]})
                 else:
-                    yield sse_event("message", {"content": canned["content"]})
+                    async for frame in fake_stream_text(canned["content"]):
+                        yield frame
                 yield sse_event("done", {"suggested_questions": []})
 
             return _sse_response(canned_stream())
@@ -92,7 +108,10 @@ async def chat(request: ChatRequest) -> fastapi.responses.StreamingResponse:
     if request.resume is not None:
         input_data: Any = Command(resume=request.resume)
     else:
-        input_data = {"messages": [HumanMessage(content=request.message or "")]}
+        input_data = {
+            "messages": [HumanMessage(content=request.message or "")],
+            "case_name": request.case_name,
+        }
 
     graph = app.state.graph
 

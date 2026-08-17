@@ -6,14 +6,14 @@ interface TopBarProps {
 
 export function TopBar({ onNewChat }: TopBarProps) {
   return (
-    <header className="flex items-center justify-between border-b dark:border-zinc-800 bg-white dark:bg-zinc-950 p-4 shadow-sm z-10">
+    <header className="flex items-center justify-between bg-[#0979BF] p-4 shadow-sm z-10">
       <img src={bmoLogo} alt="BMO" className="h-7 w-auto" />
       {onNewChat && (
         <button
           onClick={onNewChat}
           aria-label="New chat"
           title="New chat"
-          className="text-zinc-500 hover:text-blue-600 dark:text-zinc-400 dark:hover:text-blue-400 transition-colors"
+          className="text-white/80 hover:text-white transition-colors"
         >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path
