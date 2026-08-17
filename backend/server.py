@@ -76,12 +76,14 @@ async def chat(request: ChatRequest) -> fastapi.responses.StreamingResponse:
             ):
                 if stream_mode == "custom" and chunk.get("type") == "ui":
                     yield sse_event("ui", {"component": chunk["component"], "props": chunk["props"]})
+                elif stream_mode == "custom" and chunk.get("type") == "message":
+                    yield sse_event("message", {"content": chunk["content"]})
                 elif stream_mode == "messages":
                     message_chunk, metadata = chunk
-                    # Only the general-chat node produces user-facing prose; classify_intent,
-                    # extract_flight/extract_greeting, and suggest_next_questions all stream
-                    # structured-output JSON through the same "messages" channel and must not
-                    # leak into the chat bubble.
+                    # Only the general-chat node produces user-facing prose via LLM token
+                    # streaming; classify_intent, the other extract_<intent> nodes, and
+                    # suggest_next_questions all stream structured-output JSON through the
+                    # same "messages" channel and must not leak into the chat bubble.
                     if metadata.get("langgraph_node") != "extract_general":
                         continue
                     content = getattr(message_chunk, "content", "")

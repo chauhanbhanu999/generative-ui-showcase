@@ -1,14 +1,16 @@
 import type { ComponentType } from "react";
 
-import { FlightCard } from "@/components/flight-card";
-import { PieChart } from "@/components/pie-chart";
-import { NameGreeting } from "@/components/name-greeting";
+import { CaseDossier } from "@/components/case-dossier";
+import { AmSearchResults } from "@/components/am-search-results";
+import { FundingTable } from "@/components/funding-table";
+import { DownloadButton } from "@/components/download-button";
 
-// Keys here must exactly match COMPONENT_BY_INTENT in backend/graph.py -
+// Keys here must exactly match COMPONENT_BY_INTENT in backend/agent_graph.py -
 // that dict is the single source of truth for which identifier strings
 // are valid; this registry is just the client-side half of the dispatch.
 export const COMPONENT_REGISTRY: Record<string, ComponentType<any>> = {
-  "pie-chart": PieChart,
-  "flight-card": FlightCard,
-  "name-greeting": NameGreeting,
+  "case-dossier": CaseDossier,
+  "am-search-results": AmSearchResults,
+  "funding-table": FundingTable,
+  "download-button": DownloadButton,
 };

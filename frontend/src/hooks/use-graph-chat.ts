@@ -17,6 +17,7 @@ export interface ChatTurn {
   ui: UiComponentPayload | null;
   pendingFields: FieldPrompt[] | null;
   suggestions: string[];
+  pendingFilingDecision?: boolean;
 }
 
 interface SendOptions {
@@ -162,5 +163,15 @@ export function useGraphChat(initialMessages: ChatTurn[] = []) {
     }
   }, []);
 
-  return { messages, send, isLoading };
+  // Appends a turn without a network round-trip - for client-only flows (slash
+  // command echoes, validation responses) that still belong in the chat history.
+  const addLocalTurn = useCallback((turn: ChatTurn) => {
+    setMessages((prev) => [...prev, turn]);
+  }, []);
+
+  const updateTurn = useCallback((id: string, patch: Partial<ChatTurn>) => {
+    setMessages((prev) => prev.map((turn) => (turn.id === id ? { ...turn, ...patch } : turn)));
+  }, []);
+
+  return { messages, send, isLoading, addLocalTurn, updateTurn };
 }

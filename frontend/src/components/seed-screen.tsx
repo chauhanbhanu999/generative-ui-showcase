@@ -35,7 +35,7 @@ export function SeedScreen({ onStart }: SeedScreenProps) {
               autoFocus
               value={value}
               onChange={(e) => setValue(e.target.value)}
-              placeholder="CASE-1042"
+              placeholder=""
               className="h-11 flex-1 rounded-full border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-[18px] text-sm font-medium text-zinc-700 dark:text-zinc-200 outline-none focus:border-blue-500"
             />
             <button
