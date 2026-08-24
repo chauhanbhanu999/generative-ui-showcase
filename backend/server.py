@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import dataclasses
 import json
 import random
 import sys
@@ -24,9 +25,12 @@ from langgraph.types import Command
 
 from .agent_graph import build_graph
 from .canned_responses import match_canned_response
+from .rag_pipeline.rag import build_chunks_from_pdf
 
 _REPO_ROOT = Path(__file__).resolve().parents[1]
 CHECKPOINT_DB = _REPO_ROOT / "backend" / "checkpoints.db"
+RAG_SOURCE_PDF = _REPO_ROOT / "1810.04805v2.pdf"
+RAG_IMAGE_DIR = _REPO_ROOT / "backend" / "rag_pipeline" / "output" / "images"
 
 
 @asynccontextmanager
@@ -152,6 +156,18 @@ async def chat(request: ChatRequest) -> fastapi.responses.StreamingResponse:
             yield sse_event("error", {"message": str(e)})
 
     return _sse_response(event_stream())
+
+
+@app.post("/rag/ingest")
+async def rag_ingest() -> dict[str, Any]:
+    # Docling + SemanticChunker are both blocking/CPU-bound, so run them off the
+    # event loop thread rather than stalling other requests during ingestion.
+    chunks = await asyncio.to_thread(build_chunks_from_pdf, RAG_SOURCE_PDF, RAG_IMAGE_DIR)
+    return {
+        "source": RAG_SOURCE_PDF.name,
+        "chunk_count": len(chunks),
+        "chunks": [dataclasses.asdict(chunk) for chunk in chunks],
+    }
 
 
 if __name__ == "__main__":

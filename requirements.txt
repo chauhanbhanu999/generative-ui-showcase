@@ -6,3 +6,5 @@ pydantic
 langgraph
 langchain-openai
 langgraph-checkpoint-sqlite
+docling
+langchain-experimental
